@@ -1,34 +1,34 @@
 #include "main.h"
+#include <stdlib.h>
 
 /**
- * print_string - loops through a string and prints
- * every character
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
+ * print_S - A function that prints a string and nonprintable
+ * character ascii values
+ * @S: string to print
+ * Return: number of printed characters
  */
-int print_string(va_list l, flags_t *f)
+int print_S(va_list S)
 {
-	char *s = va_arg(l, char *);
+	unsigned int i = 0;
+	int counter = 0;
+	char *str = va_arg(S, char *);
 
-	(void)f;
-
-	if (!s)
-		s = "(null)";
-	return (_puts(s));
-}
-
-/**
- * print_char - prints a character
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
- */
-int print_char(va_list l, flags_t *f)
-{
-	(void)f;
-	_putchar(va_arg(l, int));
-	return (1);
+	if (str == NULL)
+		str = "(null)";
+	for (; str[i]; i++)
+	{
+		if (str[i] < 32 || str[i] >= 127)
+		{
+			_putchar('\\');
+			_putchar('x');
+			counter += 2;
+			counter += print_x(S);
+		}
+		else
+		{
+			_putchar(str[i]);
+			counter++;
+		}
+	}
+	return (counter);
 }
