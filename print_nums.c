@@ -1,32 +1,48 @@
 #include "main.h"
-#include <stdlib.h>
 
 /**
- * print_u - A function that prints an unsigned integer
- * @u: unsigned int to print
- * Return: number of printed digits
- */
-int print_u(va_list u)
+* print_d - Print decimal (Base 10) digits (%d)
+* @ar_list: Store the value of arguments
+* Return: Counter print numbers
+*/
+int print_d(va_list ar_list)
 {
-	unsigned int a[10];
-	unsigned int j = 1, m = 1000000000, n, sum = 0;
-	int counter = 0;
+	unsigned int num_Absolute, aux_Num, count_Zero, count;
+	int numbers;
 
-	n = va_arg(u, unsigned int);
-	a[0] = n / m;
-	for (; j < 10; j++)
+	count = 0;
+
+	numbers = va_arg(ar_list, int);
+
+	if (numbers < 0)
 	{
-		m /= 10;
-		a[j] = (n / m) % 10;
+		num_Absolute = (numbers * -1);
+		count += _putchar(45);
 	}
-	for (j = 0; j < 10; j++)
+	else
+		num_Absolute = numbers;
+
+	aux_Num = num_Absolute;
+	count_Zero = 1;
+	while (aux_Num > 9)
 	{
-		sum += a[j];
-		if (sum || j == 9)
-		{
-			_putchar('0' + a[j]);
-			counter++;
-		}
+		aux_Num /= 10;
+		count_Zero *= 10;
 	}
-	return (counter);
+
+	while (count_Zero >= 1)
+	{
+		count += _putchar(((num_Absolute / count_Zero) % 10) + '0');
+		count_Zero /= 10;
+	}
+	return (count);
+}
+/**
+* print_i - Print the integers (%i)
+* @ar_list: Store list numbers
+* Return: Number print
+*/
+int print_i(va_list ar_list)
+{
+	return (print_d(ar_list));
 }
