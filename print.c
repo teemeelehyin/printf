@@ -1,84 +1,47 @@
 #include "main.h"
-#include <stdarg.h>
-
 /**
- * check_format - checks if there is a valid format specifier
- * @format: possible valid format specifier
- * Return: pointer to valid function or NULL
- */
-int (*check_format(const char *format))(va_list)
-{
-	int i = 0;
-	print_t p[] = {
-		{"c", print_c},
-		{"s", print_s},
-		{"i", print_i},
-		{"d", print_d},
-		{"b", print_b},
-		{"u", print_u},
-		{"o", print_o},
-		{"x", print_x},
-		{"X", print_X},
-		{"p", print_p},
-		{"S", print_S},
-		{"r", print_r},
-		{"R", print_R},
-		{NULL, NULL}
-	};
-
-	for (; p[i].t != NULL; i++)
-	{
-		if (*(p[i].t) == *format)
-			break;
-	}
-	return (p[i].f);
-}
-
-/**
- * _printf - function for format printing
- * @format: list of arguments to printing
- * Return: Number of characters to printing
- */
+* _printf - main function to print in console
+* @format: array to print and check type
+* Return: count of character printed
+**/
 int _printf(const char *format, ...)
 {
-	va_list ap;
-	int (*f)(va_list);
-	unsigned int i = 0, counter = 0;
+	int count = -1;
 
-	if (format == NULL)
-		return (-1);
-
-	va_start(ap, format);
-	while (format && format[i])
+	if (format != NULL)
 	{
-		if (format[i] != '%')
+		int i;
+		va_list ar_list;
+		int (*o)(va_list);
+
+		va_start(ar_list, format);
+
+		if (format[0] == '%' && format[1] == '\0')
+			return (-1);
+
+		count = 0;
+
+		for (i = 0; format[i] != '\0'; i++)
 		{
-			_putchar(format[i]);
-			counter++;
-			i++;
-			continue;
-		}
-		else
-		{
-			if (format[i + 1] == '%')
+			if (format[i] == '%')
 			{
-				_putchar('%');
-				counter++;
-				i += 2;
-				continue;
+				if (format[i + 1] == '%')
+				{
+					count += _putchar(format[i]);
+					i++;
+				}
+				else if (format[i + 1] != '\0')
+				{
+					o = get_func(format[i + 1]);
+					count += (o ? o(ar_list) : _putchar(format[i]) + _putchar(format[i + 1]));
+					i++;
+				}
 			}
 			else
-			{
-				f = check_format(&format[i + 1]);
-				if (f == NULL)
-					return (-1);
-				i += 2;
-				counter += f(ap);
-				continue;
-			}
+				count += _putchar(format[i]);
 		}
-		i++;
+		va_end(ar_list);
 	}
-	va_end(ap);
-	return (counter);
+
+	return (count);
 }
